@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>楽天市場 AI Smart Matching - Portfolio</title>
+    <meta name="description" content="楽天市場の膨大なデータを活用し、スワイプ操作だけで最適な商品に出会えるAI新機能のプロトタイプ。">
+
+    <!-- Google Fonts: Noto Sans JP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Google Fonts Icons: Material Symbols Rounded (親しみやすさ重視) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet">
+
+    <style>
+        /* --- 1. Design Tokens & Variables --- */
+        :root {
+            /* Colors */
+            --c-primary: #BF0000;
+            --c-primary-dark: #900000;
+            --c-ai-gradient: linear-gradient(135deg, #0095FF 0%, #FF0099 100%);
+            --c-text-main: #1A1A1A;
+            --c-text-sub: #555555;
+            --c-bg-body: #FAFAFA;
+            --c-bg-surface: #FFFFFF;
+            --c-border: #EAEAEA;
+
+            /* Typography (Fluid Sizing) */
+            --f-main: 'Noto Sans JP', sans-serif;
+            --sz-h1: clamp(2.5rem, 2vw + 1rem, 4.5rem);
+            --sz-h2: clamp(1.75rem, 4vw, 2.5rem);
+            --sz-h3: clamp(1.25rem, 2vw, 1.5rem);
+            --sz-body: clamp(0.95rem, 1vw + 0.5rem, 1.125rem);
+
+            /* Spacing */
+            --sp-section: clamp(80px, 10vw, 140px);
+            --sp-container: clamp(16px, 5vw, 40px);
+
+            /* Shapes */
+            --r-card: 24px;
+            --r-btn: 999px;
+
+            /* Shadows (Natural & Soft) */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.12);
+            --shadow-ai: 0 8px 32px rgba(13, 152, 244, 0.25);
+        }
+
+        /* --- 2. Reset & Base --- */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--f-main);
+            color: var(--c-text-main);
+            background-color: var(--c-bg-body);
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            font-feature-settings: "palt";
+        }
+
+
+        img,
+        iframe {
+            max-width: 100%;
+            display: block;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: opacity 0.2s ease;
+        }
+
+        .mainimg {
+            max-width: 1200px;
+        }
+
+        /* --- 3. Utilities --- */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--sp-container);
+        }
+
+        .text-gradient {
+            background: var(--c-ai-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        /* Icon Setup */
+        .material-symbols-rounded {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+            user-select: none;
+        }
+
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        .icon-lg {
+            font-size: 40px;
+        }
+
+
+        .pr {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin: 32px 0;
+        }
+
+        /* Button Component */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5em;
+            padding: 1.2em 2.5em;
+            border-radius: var(--r-btn);
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+            cursor: pointer;
+            border: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--c-primary);
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(191, 0, 0, 0.3);
+        }
+
+        .tuto-anim-container {
+            height: 180px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .btn-ai {
+            background: var(--c-bg-surface);
+            color: var(--c-text-main);
+            border: 2px solid transparent;
+            background-image: linear-gradient(white, white), var(--c-ai-gradient);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            background: rgba(13, 152, 244, 0.08);
+            color: #0070BA;
+            /* Accessible Blue */
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        /* --- 4. Animation --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- 5. Sections --- */
+
+        /* Hero */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            padding: 50px 0 100px;
+            align-items: center;
+            overflow: hidden;
+            background: radial-gradient(circle at 70% 20%, rgba(255, 0, 153, 0.03) 0%, rgba(255, 255, 255, 0) 60%);
+        }
+
+
+        .hero-content h1 {
+            font-size: var(--sz-h1);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-top: 32px;
+            letter-spacing: -0.04em;
+            margin-bottom: 32px;
+            text-align: center;
+            color: var(--c-text-main);
+        }
+
+        .hero-content p {
+            font-size: var(--sz-body);
+            color: var(--c-text-sub);
+            margin-bottom: 48px;
+            max-width: 540px;
+        }
+
+        .hero-visual {
+            position: relative;
+            z-index: 1;
+        }
+
+        .visual-frame {
+            border-radius: var(--r-card);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            aspect-ratio: 4/3;
+            background: #eee;
+            /* Placeholder */
+            position: relative;
+        }
+
+        .visual-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .visual-frame:hover img {
+            transform: scale(1.03);
+        }
+
+        /* Floating Cards */
+        .float-card {
+            position: absolute;
+            background: white;
+            padding: 14px 24px;
+            border-radius: 99px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            z-index: 2;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .float-1 {
+            top: 10%;
+            left: -20px;
+            animation-delay: 0s;
+        }
+
+        .float-2 {
+            bottom: 15%;
+            right: -20px;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Concept */
+        .section-concept {
+            padding: var(--sp-section) 0;
+            background: white;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: var(--sz-h2);
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+
+        /* Feature Cards */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            background: var(--c-bg-surface);
+            padding: 40px 32px;
+            border-radius: var(--r-card);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--c-border);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-md);
+            border-color: transparent;
+        }
+
+        .icon-box {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            background: rgba(191, 0, 0, 0.04);
+            color: var(--c-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            transition: background 0.3s ease;
+        }
+
+        .feature-card:hover .icon-box {
+            background: var(--c-primary);
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+        }
+
+        .feature-card p {
+            color: var(--c-text-sub);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Prototype Demo */
+        .section-demo {
+            padding: var(--sp-section) 0;
+            background: linear-gradient(180deg, var(--c-bg-body) 0%, #E9EFF5 100%);
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .demo-wrapper {
+            margin-top: 60px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .mockup {
+            width: 340px;
+            height: 680px;
+            background: #111;
+            border-radius: 48px;
+            padding: 12px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            margin: 0 auto;
+            border: 6px solid #2d2d2d;
+        }
+
+        .mockup-screen {
+            background: white;
+            width: 100%;
+            height: 100%;
+            border-radius: 36px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .mockup-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f5;
+            color: #666;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        /* Footer */
+        footer {
+            padding: 80px 0 40px;
+            background: #111;
+            color: white;
+            text-align: center;
+        }
+
+        .footer-nav {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+
+        .footer-nav a {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .footer-nav a:hover {
+            color: white;
+        }
+
+        .copyright {
+            color: #444;
+            font-size: 0.8rem;
+        }
+
+        /* --- 6. Responsive Design --- */
+        @media (max-width: 960px) {
+
+            .hero-grid,
+            .concept-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                text-align: center;
+            }
+
+            .hero-content p {
+                margin: 0 auto 40px;
+            }
+
+            .hero {
+                padding-top: 100px;
+            }
+
+            .hero-grid {
+                /* スマホではビジュアルを先に持ってくるパターンも有効だが、
+                   今回はコピー優先でテキストを上にする */
+            }
+
+            .float-card {
+                display: none;
+                /* スマホで邪魔になるので消す */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn {
+                width: 100%;
+            }
+
+            .mockup {
+                width: 100%;
+                height: 75vh;
+                border-width: 2px;
+            }
+        }
+
+        /* --- Tutorial Visual (Prototypeから移植) --- */
+        .tuto-slide {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px 28px;
+            background: var(--c-bg-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-card);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tuto-anim-container {
+            height: 180px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        /* Step 1: Swipe Animation */
+        .tuto-stack {
+            position: relative;
+            width: 140px;
+            height: 180px;
+        }
+
+        .tuto-card-mock {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: 0;
+            left: 0;
+        }
+
+        .tuto-card-top {
+            z-index: 2;
+            animation: tutoCardSwipe 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tuto-card-back {
+            z-index: 1;
+            transform: scale(0.9) translateY(12px);
+            background: #F9F9F9;
+        }
+
+        .tuto-hand {
+            position: absolute;
+            bottom: -30px;
+            right: -30px;
+            z-index: 10;
+            font-size: 48px;
+            color: #333;
+            animation: tutoHandSwipe 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+        }
+
+        @keyframes tutoCardSwipe {
+
+            0%,
+            15% {
+                transform: translateX(0) rotate(0);
+                opacity: 1;
+            }
+
+            50% {
+                transform: translateX(-120px) rotate(-15deg);
+                opacity: 0;
+            }
+
+            51% {
+                transform: translateX(0) rotate(0);
+                opacity: 0;
+            }
+
+            70%,
+            100% {
+                transform: translateX(0) rotate(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes tutoHandSwipe {
+
+            0%,
+            15% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+
+            50% {
+                transform: translate(-100px, -20px);
+                opacity: 0;
+            }
+
+            51% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+
+            70%,
+            100% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+        }
+
+        /* Step 2: Analyze Animation */
+        .tuto-reviews {
+            position: relative;
+            width: 200px;
+            height: 150px;
+        }
+
+        .tuto-bubble {
+            position: absolute;
+            font-size: 24px;
+            color: #BBB;
+            animation: tutoBubbleFloat 3s infinite ease-in-out;
+        }
+
+        .tuto-brain-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 64px;
+            color: #7024C4;
+            filter: drop-shadow(0 0 20px rgba(112, 36, 196, 0.25));
+            animation: tutoPulse 2s infinite;
+        }
+
+        @keyframes tutoBubbleFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-10px) scale(0.9);
+            }
+        }
+
+        @keyframes tutoPulse {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+
+        /* Step 3: Result Animation */
+        .tuto-stars {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .tuto-star-card {
+            width: 40px;
+            height: 60px;
+            background: white;
+            border: 1px solid #EEE;
+            border-radius: 6px;
+            animation: tutoPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .tuto-star-card.main {
+            width: 60px;
+            height: 110px;
+            border: 2px solid #7024C4;
+            box-shadow: 0 8px 20px rgba(112, 36, 196, 0.18);
+        }
+
+        @keyframes tutoPop {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 動きが苦手な人向け（端末設定に従う） */
+        @media (prefers-reduced-motion: reduce) {
+
+            .tuto-card-top,
+            .tuto-hand,
+            .tuto-bubble,
+            .tuto-brain-icon,
+            .tuto-star-card {
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container hero-grid">
+            <div class="hero-content reveal active">
+
+                <h1>
+                    若年層ユーザーから<br>もっとたくさん使ってもらえるようになるための<br>新しいユーザー体験やサービス
+                </h1>
+                <div class="mainimg"><img src="img/aimaching.webp" alt=""></div>
+                <div style="display: flex; gap: 16px;" class="pr">
+                    <a href="https://kentakahashi0523.github.io/rakutenaimatching/" target="_blank"
+                        class="btn btn-primary">
+                        プロトタイプを試す
+                        <span class="material-symbols-rounded" aria-hidden="true">open_in_new</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        </div>
+    </header>
+
+    <!-- Concept Section -->
+    <section class="section-concept">
+        <div class="container">
+            <div class="concept-grid">
+                <div class="reveal">
+                    <h2 class="section-title">
+                        直感で仕分けるから、<br>
+                        早くて<span class="text-gradient">迷わない</span>。
+                    </h2>
+                    <p style="color:var(--c-text-sub); margin-bottom: 24px;">
+                        ユーザーは「判断軸（価格、サイズ、用途など）」を左右のスワイプで仕分けるだけ。
+                        検索疲れや比較疲れを解消し、効率的で納得感のある買い物を実現します。
+                    </p>
+                    <ul style="list-style: none; display: grid; gap: 16px;">
+                        <li style="display: flex; align-items: center; gap: 12px; font-weight: 700;">
+                            <span class="material-symbols-rounded icon-fill"
+                                style="color:var(--c-primary)">check_circle</span>
+                            言語化できない「好み」を発見
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 12px; font-weight: 700;">
+                            <span class="material-symbols-rounded icon-fill"
+                                style="color:var(--c-primary)">check_circle</span>
+                            学習コストゼロのUI体験
+                        </li>
+                    </ul>
+                </div>
+                <div class="tuto-slide" id="tuto-container">
+                    <!-- Dynamic Content -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Value (Why Rakuten?) -->
+    <section class="section-concept" style="background:var(--c-bg-body);">
+        <div class="container">
+            <div class="reveal" style="text-align: center; max-width: 700px; margin: 0 auto 60px;">
+                <span class="tag" style="background:white; border:1px solid var(--c-border);">Business Value</span>
+                <h2 class="section-title">なぜ、楽天でやるのか？</h2>
+                <p>この機能がもたらすビジネスインパクトと拡張性</p>
+            </div>
+
+            <div class="features reveal">
+                <!-- Card 1 -->
+                <article class="feature-card">
+                    <div class="icon-box">
+                        <span class="material-symbols-rounded icon-lg">database</span>
+                    </div>
+                    <h3>圧倒的な実データ</h3>
+                    <p>楽天市場・トラベルなどに蓄積された膨大な口コミや購入後評価があるからこそ、AIが正確な「判断軸」や「失敗理由」を抽出できます。</p>
+                </article>
+
+                <!-- Card 2 -->
+                <article class="feature-card">
+                    <div class="icon-box">
+                        <span class="material-symbols-rounded icon-lg">hub</span>
+                    </div>
+                    <h3>サービス横断の拡張性</h3>
+                    <p>IDが連携しているため、この判断傾向データはECだけでなく、金融や旅行などグループ全体の体験設計に波及できます。</p>
+                </article>
+
+                <!-- Card 3 -->
+                <article class="feature-card">
+                    <div class="icon-box">
+                        <span class="material-symbols-rounded icon-lg">trending_up</span>
+                    </div>
+                    <h3>LTVの最大化</h3>
+                    <p>使えば使うほど「自分のデータ」が蓄積され、提案精度が向上。ユーザーの離脱を防ぎ、長期的なエンゲージメントを築きます。</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prototype Demo -->
+    <section class="section-demo">
+        <div class="container">
+            <div class="reveal">
+                <span class="tag" style="background:white;">Prototype</span>
+                <h2 class="section-title">Experience the Future</h2>
+                <p>実際の操作画面をご覧ください</p>
+
+                <div class="demo-wrapper">
+                    <div class="mockup">
+                        <div class="mockup-screen">
+                            <!-- iframe読み込み（遅延ロード対応） -->
+                            <iframe src="https://kentakahashi0523.github.io/rakutenaimatching/"
+                                title="Rakuten AI Matching Prototype" width="100%" height="100%"
+                                style="border:none; position:relative; z-index:20;" loading="lazy">
+                            </iframe>
+                            <!-- 読み込み失敗時やロード中のためのプレースホルダ -->
+                            <div class="mockup-placeholder">
+                                <span class="material-symbols-rounded"
+                                    style="font-size: 48px; color: #ddd; margin-bottom:16px;">smartphone</span>
+                                <p>Loading Demo...</p>
+                                <a href="https://kentakahashi0523.github.io/rakutenaimatching/" target="_blank"
+                                    class="btn btn-primary" style="margin-top:20px; font-size:0.9rem;">
+                                    別タブで開く
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <a href="https://kentakahashi0523.github.io/rakutenaimatching/" target="_blank" class="btn btn-ai">
+                        全画面でデモを試す
+                        <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <h2 style="font-size: 1.5rem; margin-bottom: 24px; font-weight:900;">Rakuten AI Smart Matching</h2>
+            <div class="footer-nav">
+                <!-- 実運用時はリンクを入れる -->
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+            <p class="copyright">&copy; 2024 Portfolio Work. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll Animation Observer (Performance Optimized)
+        document.addEventListener("DOMContentLoaded", () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, {
+                rootMargin: '0px 0px -10% 0px', // 少し見えてから発火
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
+
+        /* Tuto Logic */
+        function renderTutoContent() {
+            const d = DATA.tutos[state.tutoIdx];
+            const container = document.getElementById('tuto-container');
+
+            let visualHTML = '';
+            if (d.type === 'swipe') {
+                visualHTML = `
+                <div class="tuto-anim-container">
+                    <div class="tuto-stack">
+                        <div class="tuto-card-mock tuto-card-back"></div>
+                        <div class="tuto-card-mock tuto-card-top">
+                            <div style="width:60px; height:60px; background:#F2F2F7; border-radius:50%; margin:0 auto;"></div>
+                            <div style="width:80px; height:10px; background:#F2F2F7; border-radius:4px; margin:0 auto;"></div>
+                        </div>
+                    </div>
+                    <span class="material-symbols-rounded tuto-hand">touch_app</span>
+                </div>
+            `;
+            } else if (d.type === 'analyze') {
+                visualHTML = `
+                <div class="tuto-anim-container">
+                    <div class="tuto-reviews">
+                        <span class="material-symbols-rounded tuto-bubble" style="top:10%; left:10%; animation-delay:0s">chat</span>
+                        <span class="material-symbols-rounded tuto-bubble" style="top:20%; right:10%; animation-delay:0.5s">rate_review</span>
+                        <span class="material-symbols-rounded tuto-bubble" style="bottom:10%; left:20%; animation-delay:1s">thumb_up</span>
+                        <span class="material-symbols-rounded tuto-brain-icon">psychology</span>
+                    </div>
+                </div>
+            `;
+            } else {
+                visualHTML = `
+                <div class="tuto-anim-container">
+                    <div class="tuto-stars">
+                        <div class="tuto-star-card" style="animation-delay:0s"></div>
+                        <div class="tuto-star-card main" style="animation-delay:0.2s"></div>
+                        <div class="tuto-star-card" style="animation-delay:0.4s"></div>
+                    </div>
+                </div>
+            `;
+            }
+
+            container.innerHTML = `
+            ${visualHTML}
+            <h2 style="font-size:24px; margin-bottom:12px; letter-spacing: -0.01em;">${d.title}</h2>
+            <p style="font-size:15px; line-height:1.7; color:var(--c-text-sub);">${d.desc.replace(/\n/g, '<br>')}</p>
+        `;
+
+            document.querySelectorAll('.dot').forEach((e, i) => e.style.background = (i === state.tutoIdx) ? 'var(--c-ai-start)' : 'var(--c-border)');
+
+            const btn = document.getElementById('tuto-btn');
+            if (state.tutoIdx === DATA.tutos.length - 1) btn.innerText = '始める';
+            else btn.innerText = '次へ';
+        }
+    </script>
+
+
+</body>
+
+</html>

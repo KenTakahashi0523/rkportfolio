@@ -363,10 +363,6 @@
             ;
         }
 
-        .main-visual-container:hover img {
-            transform: scale(1.03);
-        }
-
         /* Section Titles */
         .section-title {
             font-size: clamp(2rem, 3.5vw, 2.5rem);
@@ -549,7 +545,6 @@
         .step-img-area {
             width: 100%;
             aspect-ratio: 16/10;
-            background: #F2F2F7;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -729,6 +724,544 @@
         #prototype {
             margin-top: 5vw;
         }
+
+        .material-symbols-rounded {
+            font-variation-settings: "FILL" 0, "wght" 520, "GRAD" 0, "opsz" 24;
+            line-height: 1;
+        }
+
+        /* ===== tokens（必要ならここだけ差し替え） ===== */
+        :root {
+            --ink: #111;
+            --muted: rgba(17, 17, 17, .45);
+            --line: rgba(0, 0, 0, .08);
+            --surface: #fff;
+            --bg: #f6f7fb;
+
+            /* 画像の紫〜青グラデ寄せ */
+            --p1: #3a8dff;
+            --p2: #7b4dff;
+            --p3: #d11cff;
+
+            --glow: 0 18px 40px rgba(90, 60, 255, .20);
+            --shadow: 0 22px 50px rgba(0, 0, 0, .10);
+            --radius: 22px;
+        }
+
+        /* 共通：イラスト枠 */
+        .illus-onb {
+            position: relative;
+            width: 100%;
+            height: 260px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, .06);
+            transform: translateZ(0);
+        }
+
+        /* うっすら背景 */
+        .illus-softbg {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 50% 45%, rgba(123, 77, 255, .10), transparent 55%),
+                radial-gradient(circle at 25% 70%, rgba(58, 141, 255, .08), transparent 55%),
+                radial-gradient(circle at 80% 75%, rgba(209, 28, 255, .08), transparent 55%);
+            opacity: .65;
+        }
+
+        /* 画面に入るまでアニメ停止 */
+        .observe * {
+            animation-play-state: paused;
+        }
+
+        .observe.is-visible * {
+            animation-play-state: running;
+        }
+
+        /* ===== Step1（オンボーディングっぽい：中央アイコン＋小アイコン浮遊） ===== */
+        .illus-s1 .center-icon {
+            position: absolute;
+            left: 50%;
+            top: 44%;
+            transform: translate(-50%, -50%);
+            width: 92px;
+            height: 92px;
+            display: grid;
+            place-items: center;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .85);
+            box-shadow: var(--glow);
+            border: 1px solid rgba(123, 77, 255, .16);
+        }
+
+        .illus-s1 .center-icon .main {
+            font-size: 46px;
+            color: rgba(123, 77, 255, .95);
+            filter: drop-shadow(0 8px 18px rgba(123, 77, 255, .25));
+            animation: iconPop 1.0s ease forwards;
+        }
+
+        @keyframes iconPop {
+            from {
+                transform: scale(.92);
+                opacity: .0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .illus-s1 .float-ico {
+            position: absolute;
+            font-size: 22px;
+            color: rgba(17, 17, 17, .28);
+            opacity: .55;
+            animation: floatA 2.8s ease-in-out infinite;
+        }
+
+        .illus-s1 .f1 {
+            left: 30%;
+            top: 30%;
+            animation-delay: .0s;
+        }
+
+        .illus-s1 .f2 {
+            left: 24%;
+            top: 56%;
+            animation-delay: .2s;
+        }
+
+        .illus-s1 .f3 {
+            left: 70%;
+            top: 34%;
+            animation-delay: .35s;
+        }
+
+        @keyframes floatA {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .illus-s1 .micro-lines {
+            position: absolute;
+            left: 50%;
+            top: 72%;
+            transform: translateX(-50%);
+            width: 220px;
+            display: grid;
+            gap: 10px;
+            opacity: .25;
+        }
+
+        .illus-s1 .micro-lines span {
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, .10);
+        }
+
+        .illus-s1 .micro-lines span:nth-child(1) {
+            width: 220px;
+        }
+
+        .illus-s1 .micro-lines span:nth-child(2) {
+            width: 160px;
+            margin-left: 30px;
+        }
+
+        .illus-s1 .micro-lines span:nth-child(3) {
+            width: 190px;
+            margin-left: 12px;
+        }
+
+        .illus-s1 .pulse-ring {
+            position: absolute;
+            left: 50%;
+            top: 44%;
+            transform: translate(-50%, -50%);
+            width: 92px;
+            height: 92px;
+            border-radius: 999px;
+            border: 2px solid rgba(123, 77, 255, .25);
+            opacity: 0;
+            animation: ring 2.2s ease-in-out infinite;
+        }
+
+        @keyframes ring {
+            0% {
+                transform: translate(-50%, -50%) scale(.95);
+                opacity: 0;
+            }
+
+            35% {
+                opacity: .55;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1.55);
+                opacity: 0;
+            }
+        }
+
+        /* ===== Step2（カード＋スタンプ＋下の×/✓） ===== */
+        .illus-s2 .stack {
+            position: absolute;
+            left: 50%;
+            top: 45%;
+            transform: translate(-50%, -50%);
+            width: min(420px, 78%);
+            height: 190px;
+            border-radius: 26px;
+            background: rgba(255, 255, 255, .92);
+            border: 1px solid rgba(0, 0, 0, .06);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, .08);
+        }
+
+        .illus-s2 .back1 {
+            transform: translate(-56%, -52%) rotate(-6deg);
+            opacity: .55;
+        }
+
+        .illus-s2 .back2 {
+            transform: translate(-44%, -48%) rotate(4deg);
+            opacity: .70;
+        }
+
+        .illus-s2 .swipe-card {
+            position: absolute;
+            left: 50%;
+            top: 45%;
+            width: min(420px, 78%);
+            height: 190px;
+            transform: translate(-50%, -50%);
+            border-radius: 26px;
+            background: rgba(255, 255, 255, .97);
+            border: 1px solid rgba(0, 0, 0, .07);
+            box-shadow: var(--shadow);
+            display: grid;
+            place-items: center;
+            gap: 10px;
+            padding: 18px 18px 20px;
+            animation: swipeDemo 3.2s ease-in-out infinite;
+        }
+
+        @keyframes swipeDemo {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            18% {
+                transform: translate(calc(-50% - 64px), -50%) rotate(-7deg);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            68% {
+                transform: translate(calc(-50% + 64px), -50%) rotate(7deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+        }
+
+        .illus-s2 .swipe-top {
+            width: 66px;
+            height: 66px;
+            border-radius: 999px;
+            background: rgba(123, 77, 255, .10);
+            display: grid;
+            place-items: center;
+        }
+
+        .illus-s2 .swipe-top .material-symbols-rounded {
+            font-size: 34px;
+            color: rgba(17, 17, 17, .65);
+        }
+
+        .illus-s2 .swipe-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: rgba(17, 17, 17, .92);
+        }
+
+        .illus-s2 .swipe-text {
+            font-size: 13px;
+            color: rgba(17, 17, 17, .55);
+            margin-top: -6px;
+        }
+
+        /* スタンプ（画像の緑っぽい「重視する」） */
+        .illus-s2 .stamp {
+            position: absolute;
+            top: 22px;
+            left: 54%;
+            transform: rotate(-12deg);
+            padding: 12px 18px;
+            border-radius: 12px;
+            border: 4px solid rgba(79, 190, 118, .70);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, .08);
+            background: rgba(255, 255, 255, .75);
+        }
+
+        .illus-s2 .stamp span {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: .02em;
+            color: rgba(79, 190, 118, .78);
+        }
+
+        /* 下の×/✓ */
+        .illus-s2 .decision-bar {
+            display: none;
+            position: absolute;
+            left: 50%;
+            bottom: 18px;
+            transform: translateX(-50%);
+            width: min(420px, 78%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .illus-s2 .dec {
+            width: 72px;
+            height: 72px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .92);
+            border: 1px solid rgba(0, 0, 0, .08);
+            display: grid;
+            place-items: center;
+            box-shadow: 0 16px 34px rgba(0, 0, 0, .10);
+        }
+
+        .illus-s2 .dec.left .material-symbols-rounded {
+            font-size: 30px;
+            color: rgba(17, 17, 17, .70);
+        }
+
+        .illus-s2 .dec.right {
+            border: 1px solid rgba(123, 77, 255, .18);
+            box-shadow: 0 18px 38px rgba(123, 77, 255, .18);
+            background: linear-gradient(135deg, rgba(58, 141, 255, .85), rgba(209, 28, 255, .85));
+        }
+
+        .illus-s2 .dec.right .material-symbols-rounded {
+            font-size: 30px;
+            color: rgba(255, 255, 255, .95);
+        }
+
+        .illus-s2 .swipe-trail {
+            position: absolute;
+            left: 50%;
+            top: 45%;
+            width: 220px;
+            height: 220px;
+            transform: translate(-50%, -50%);
+            border-radius: 999px;
+            background: radial-gradient(circle at 60% 50%, rgba(209, 28, 255, .12), transparent 55%);
+            opacity: 0;
+            animation: trailPulse 3.2s ease-in-out infinite;
+        }
+
+        @keyframes trailPulse {
+
+            0%,
+            20% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(.88);
+            }
+
+            45% {
+                opacity: .75;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            70%,
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+        }
+
+        /* ===== Step3（3枚出現→中央だけグラデ枠＋発光） ===== */
+        .illus-s3 .best3 {
+            position: absolute;
+            left: 50%;
+            top: 48%;
+            transform: translate(-50%, -50%);
+            width: min(520px, 86%);
+            height: 160px;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1fr;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .illus-s3 .best-card {
+            height: 140px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .92);
+            border: 1px solid rgba(0, 0, 0, .08);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, .08);
+            opacity: 0;
+            transform: translateY(16px) scale(.98);
+            animation: cardIn .7s ease forwards;
+        }
+
+        .illus-s3 .c1 {
+            animation-delay: .05s;
+        }
+
+        .illus-s3 .c2 {
+            animation-delay: .18s;
+        }
+
+        .illus-s3 .c3 {
+            animation-delay: .30s;
+        }
+
+        @keyframes cardIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* 中央だけ強調 */
+        .illus-s3 .best-card.is-center {
+            height: 150px;
+            position: relative;
+            box-shadow: 0 24px 60px rgba(123, 77, 255, .20);
+            transform: translateY(16px) scale(.98);
+            animation: centerIn .85s ease forwards;
+            animation-delay: .18s;
+        }
+
+        @keyframes centerIn {
+            0% {
+                opacity: 0;
+                transform: translateY(16px) scale(.98);
+            }
+
+            70% {
+                opacity: 1;
+                transform: translateY(0) scale(1.08);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1.03);
+            }
+        }
+
+        .illus-s3 .best-card.is-center::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            border-radius: 20px;
+            padding: 2px;
+            background: linear-gradient(90deg, var(--p1), var(--p2), var(--p3), var(--p1));
+            background-size: 240% 240%;
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            animation: borderOn .2s ease forwards, gradMove 2.2s ease-in-out infinite;
+            animation-delay: .45s, .55s;
+        }
+
+        @keyframes borderOn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes gradMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .illus-s3 .best-badge {
+            position: absolute;
+            left: 50%;
+            top: 38%;
+            transform: translate(-50%, -50%);
+            width: 74px;
+            height: 74px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .92);
+            border: 1px solid rgba(123, 77, 255, .18);
+            box-shadow: var(--glow);
+            display: grid;
+            place-items: center;
+            opacity: 0;
+            animation: badgeIn .6s ease forwards;
+            animation-delay: .55s;
+        }
+
+        .illus-s3 .best-badge .material-symbols-rounded {
+            font-size: 34px;
+            color: rgba(123, 77, 255, .95);
+        }
+
+        @keyframes badgeIn {
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .illus-s3 .micro-dots {
+            position: absolute;
+            left: 50%;
+            bottom: 18px;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            opacity: .22;
+        }
+
+        .illus-s3 .micro-dots span {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, .14);
+        }
+
+        /* 小さめ画面 */
+        @media (max-width:520px) {
+            .illus-onb {
+                height: 240px;
+            }
+
+            .illus-s2 .stamp span {
+                font-size: 24px;
+            }
+        }
     </style>
 </head>
 
@@ -753,7 +1286,8 @@
                         </h1>
                         <div class="hero-tags">
                             <span class="badge rakuten">UXデザインコース</span>
-                            <span class="badge"><span class="en">2025.12.25 - 12.26</span></span>
+                            <span class="badge rakuten">2025.12.25-26</span>
+                            <span class="badge rakuten">個人制作</span>
                         </div>
                     </div>
 
@@ -826,45 +1360,120 @@
                         膨大な口コミデータをAIが解析し、あなたの「判断軸」を抽出します。
                     </p>
                     <!-- How it works (Horizontal Scroll) -->
+                    <link rel="stylesheet"
+                        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..700,0..1,0" />
+
                     <div class="steps-container">
                         <!-- Step 1 -->
                         <div class="step-card card ai-style">
                             <div class="step-img-area">
-                                <img src="https://placehold.co/800x600/F0F4F8/AAA?text=Step+1:+AI+Analysis"
-                                    alt="AIによる抽出">
+                                <div class="illus illus-onb illus-s1 observe">
+                                    <div class="illus-softbg"></div>
+
+                                    <!-- 中央：頭＋ギア（提示画像の雰囲気） -->
+                                    <div class="center-icon">
+                                        <span class="material-symbols-rounded main">psychology</span>
+                                    </div>
+
+                                    <!-- 周辺：薄い小アイコン（レビュー/いいね/メモ） -->
+                                    <span class="float-ico f1 material-symbols-rounded">chat_bubble</span>
+                                    <span class="float-ico f2 material-symbols-rounded">thumb_up</span>
+                                    <span class="float-ico f3 material-symbols-rounded">note_alt</span>
+
+                                    <!-- 下：短いサブ説明のイメージ（装飾） -->
+                                    <div class="micro-lines">
+                                        <span></span><span></span><span></span>
+                                    </div>
+
+                                    <!-- 解析の「収束」を表すリング -->
+                                    <div class="pulse-ring"></div>
+                                </div>
                             </div>
+
                             <div class="step-content">
                                 <span class="step-num">ステップ 01</span>
                                 <h3>判断軸を自動抽出</h3>
                                 <p class="text-sub" style="margin-top: 12px;">
-                                    AIが膨大な口コミから、その商品を選ぶ際に重要となる判断軸（耐久性、コスパ、静音性など）を自動で抽出します。</p>
+                                    AIが膨大な口コミから、その商品を選ぶ際に重要となる判断軸（耐久性、コスパ、静音性など）を自動で抽出します。
+                                </p>
                             </div>
                         </div>
+
                         <!-- Step 2 -->
                         <div class="step-card card ai-style">
                             <div class="step-img-area">
-                                <img src="https://placehold.co/800x600/F0F4F8/AAA?text=Step+2:+Swipe+UI" alt="スワイプで仕分け">
+                                <div class="illus illus-onb illus-s2 observe">
+                                    <div class="illus-softbg"></div>
+
+                                    <!-- 背面カード -->
+                                    <div class="stack back1"></div>
+                                    <div class="stack back2"></div>
+
+                                    <!-- 前面カード（スワイプ） -->
+                                    <div class="swipe-card">
+                                        <div class="swipe-top">
+                                            <span class="material-symbols-rounded">graphic_eq</span>
+                                        </div>
+
+                                        <div class="swipe-title">音質：低音の強さ</div>
+                                        <div class="swipe-text">好みが分かれやすい傾向</div>
+
+                                        <!-- 斜めのスタンプ（提示画像の「重視する」） -->
+                                        <div class="stamp">
+                                            <span>重視する</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- スワイプ軌跡 -->
+                                    <div class="swipe-trail"></div>
+                                </div>
                             </div>
+
                             <div class="step-content">
                                 <span class="step-num">ステップ 02</span>
                                 <h3>スワイプで直感仕分け</h3>
                                 <p class="text-sub" style="margin-top: 12px;">
-                                    抽出された項目に対し、自分が「重視する」か「しない」かを左右のスワイプで仕分け。ゲーム感覚で直感的に操作できます。</p>
+                                    抽出された項目に対し、自分が「重視する」か「しない」かを左右のスワイプで仕分け。ゲーム感覚で直感的に操作できます。
+                                </p>
                             </div>
                         </div>
+
                         <!-- Step 3 -->
                         <div class="step-card card ai-style">
                             <div class="step-img-area">
-                                <img src="https://placehold.co/800x600/F0F4F8/AAA?text=Step+3:+Best+3" alt="ベスト3の提案">
+                                <div class="illus illus-onb illus-s3 observe">
+                                    <div class="illus-softbg"></div>
+
+                                    <!-- 3枚カード：中央だけ紫枠＋発光 -->
+                                    <div class="best3">
+                                        <div class="best-card c1"></div>
+                                        <div class="best-card c2 is-center"></div>
+                                        <div class="best-card c3"></div>
+                                    </div>
+
+                                    <!-- 中央カード上の小さな「Best」バッジ -->
+                                    <div class="best-badge">
+                                        <span class="material-symbols-rounded">stars</span>
+                                    </div>
+
+                                    <!-- 表示テキストのミニ装飾 -->
+                                    <div class="micro-dots">
+                                        <span></span><span></span>
+                                    </div>
+                                </div>
                             </div>
+
                             <div class="step-content">
                                 <span class="step-num">ステップ 03</span>
                                 <h3>納得のベスト3を提案</h3>
                                 <p class="text-sub" style="margin-top: 12px;">
-                                    あなたの重視ポイントに基づいて商品を絞り込み、最終的な3つの選択肢を提案。理由が明確だから即決できます。</p>
+                                    あなたの重視ポイントに基づいて商品を絞り込み、最終的な3つの選択肢を提案。理由が明確だから即決できます。
+                                </p>
                             </div>
                         </div>
                     </div>
+
+
 
                     <!-- Comparison Diagram -->
                     <div class="comparison-area">
@@ -1073,6 +1682,21 @@
             });
         });
     </script>
+    <script>
+        (() => {
+            const targets = document.querySelectorAll('.observe');
+            if (!('IntersectionObserver' in window)) {
+                targets.forEach(el => el.classList.add('is-visible'));
+                return;
+            }
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
+            }, { threshold: 0.35 });
+            targets.forEach(el => io.observe(el));
+        })();
+    </script>
+
+
 </body>
 
 </html>

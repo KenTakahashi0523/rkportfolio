@@ -3,942 +3,1076 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>楽天市場 AI Smart Matching - Portfolio</title>
-    <meta name="description" content="楽天市場の膨大なデータを活用し、スワイプ操作だけで最適な商品に出会えるAI新機能のプロトタイプ。">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Rakuten Winter Internship 2026 Portfolio | AI Smart Matching</title>
 
-    <!-- Google Fonts: Noto Sans JP -->
+    <!-- Fonts: Noto Sans JP & Google Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap"
         rel="stylesheet">
-
-    <!-- Google Fonts Icons: Material Symbols Rounded (親しみやすさ重視) -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
 
     <style>
-        /* --- 1. Design Tokens & Variables --- */
+        /* * DESIGN TOKENS (SYSTEMATIZED)
+         */
         :root {
-            /* Colors */
-            --c-primary: #BF0000;
-            --c-primary-dark: #900000;
-            --c-ai-gradient: linear-gradient(135deg, #0095FF 0%, #FF0099 100%);
-            --c-text-main: #1A1A1A;
-            --c-text-sub: #555555;
-            --c-bg-body: #FAFAFA;
-            --c-bg-surface: #FFFFFF;
-            --c-border: #EAEAEA;
+            /* Palette: Rakuten & AI Identity */
+            --c-rakuten: #BF0000;
+            --c-rakuten-sub: rgba(191, 0, 0, 0.04);
+            --c-ai-grad: linear-gradient(135deg, #007AFF 0%, #ff00a6 100%);
+            --c-ai-sub: rgba(0, 122, 255, 0.04);
 
-            /* Typography (Fluid Sizing) */
-            --f-main: 'Noto Sans JP', sans-serif;
-            --sz-h1: clamp(2.5rem, 2vw + 1rem, 4.5rem);
-            --sz-h2: clamp(1.75rem, 4vw, 2.5rem);
-            --sz-h3: clamp(1.25rem, 2vw, 1.5rem);
-            --sz-body: clamp(0.95rem, 1vw + 0.5rem, 1.125rem);
+            /* Base Palette */
+            --c-text-main: #111111;
+            --c-text-sub: #636366;
+            /* Apple Human Interface Gray */
+            --c-bg-body: #FBFBFD;
+            --c-bg-card: #FFFFFF;
+            --c-border: rgba(0, 0, 0, 0.08);
+            --c-border-light: rgba(0, 0, 0, 0.04);
 
-            /* Spacing */
-            --sp-section: clamp(80px, 10vw, 140px);
-            --sp-container: clamp(16px, 5vw, 40px);
+            /* Typography */
+            --font-jp: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+            --font-en: "Futura", -apple-system, BlinkMacSystemFont, sans-serif;
 
-            /* Shapes */
-            --r-card: 24px;
-            --r-btn: 999px;
+            /* Layout & Spacing */
+            --max-width: 85vw;
+            /* Fixed Content Width */
+            --sp-xs: 8px;
+            --sp-sm: 16px;
+            --sp-md: 32px;
+            --sp-lg: 64px;
+            --sp-xl: 120px;
 
-            /* Shadows (Natural & Soft) */
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.12);
-            --shadow-ai: 0 8px 32px rgba(13, 152, 244, 0.25);
+            /* Radius */
+            --r-sm: 12px;
+            --r-md: 24px;
+            --r-lg: 32px;
+            --r-full: 999px;
+
+            /* Shadows (Layered for Depth) */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.08), 0 12px 24px rgba(0, 0, 0, 0.04);
+            --shadow-ai: 0 12px 32px rgba(0, 122, 255, 0.15);
+            --shadow-rakuten: 0 12px 32px rgba(191, 0, 0, 0.15);
+
+            /* Animation */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
         }
 
-        /* --- 2. Reset & Base --- */
-        *,
-        *::before,
-        *::after {
+        /* * RESET & BASE
+         */
+        * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
-            font-family: var(--f-main);
-            color: var(--c-text-main);
+            font-family: var(--font-jp);
             background-color: var(--c-bg-body);
+            color: var(--c-text-main);
             line-height: 1.8;
-            -webkit-font-smoothing: antialiased;
+            font-size: 15px;
+            letter-spacing: 0.04em;
             overflow-x: hidden;
-            font-feature-settings: "palt";
         }
 
+        /* Utility Helpers */
+        .en {
+            font-family: var(--font-en);
+            letter-spacing: 0.02em;
+        }
 
-        img,
-        iframe {
-            max-width: 100%;
+        .flex {
+            display: flex;
+        }
+
+        .grid {
+            display: grid;
+        }
+
+        .hidden-mobile {
             display: block;
         }
 
-        a {
-            text-decoration: none;
-            color: inherit;
-            transition: opacity 0.2s ease;
+        @media (max-width: 768px) {
+            .hidden-mobile {
+                display: none;
+            }
         }
 
-        .mainimg {
-            max-width: 1200px;
+        /* Typography */
+        h1,
+        h2,
+        h3 {
+            color: var(--c-text-main);
+            line-height: 1.3;
+            font-feature-settings: "palt";
         }
 
-        /* --- 3. Utilities --- */
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 var(--sp-container);
-        }
-
-        .text-gradient {
-            background: var(--c-ai-gradient);
+        .text-grad-ai {
+            background: var(--c-ai-grad);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            display: inline-block;
+            background-clip: text;
+            font-weight: 900;
         }
 
-        /* Icon Setup */
-        .material-symbols-rounded {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-            user-select: none;
+        .text-rakuten {
+            color: var(--c-rakuten);
+            font-weight: 700;
         }
 
-        .icon-fill {
-            font-variation-settings: 'FILL' 1;
+        .text-sub {
+            color: var(--c-text-sub);
+            font-size: 0.95rem;
+            font-weight: 500;
         }
 
-        .icon-lg {
-            font-size: 40px;
-        }
-
-
-        .pr {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        .text-center {
             text-align: center;
-            margin: 32px 0;
         }
 
-        /* Button Component */
+        /* * LAYOUT
+         */
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0;
+            /* Padding handled by max-width logic */
+        }
+
+        section {
+            position: relative;
+        }
+
+        /* * COMPONENTS
+         */
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 16px;
+            border-radius: var(--r-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--sp-sm);
+            transition: transform 0.3s var(--ease-out-expo);
+        }
+
+        .badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .badge.rakuten {
+            background: var(--c-rakuten);
+            color: #FFF;
+            box-shadow: 0 4px 12px rgba(191, 0, 0, 0.2);
+        }
+
+        .badge.ai {
+            background: var(--c-ai-grad);
+            color: #FFF;
+            display: inline-block;
+            width: 10vw;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+        }
+
+        /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5em;
-            padding: 1.2em 2.5em;
-            border-radius: var(--r-btn);
+            gap: 8px;
+            padding: 16px 40px;
+            border-radius: var(--r-full);
             font-weight: 700;
+            text-decoration: none;
+            transition: all 0.4s var(--ease-out-expo);
             font-size: 1rem;
-            letter-spacing: 0.05em;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
-            cursor: pointer;
             border: none;
-            text-align: center;
-        }
-
-        .btn-primary {
-            background: var(--c-primary);
-            color: white;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(191, 0, 0, 0.3);
-        }
-
-        .tuto-anim-container {
-            height: 180px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 24px;
+            cursor: pointer;
             position: relative;
+            overflow: hidden;
         }
 
-        .btn-ai {
-            background: var(--c-bg-surface);
-            color: var(--c-text-main);
-            border: 2px solid transparent;
-            background-image: linear-gradient(white, white), var(--c-ai-gradient);
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
-            box-shadow: var(--shadow-sm);
+        .btn-rakuten {
+            background: var(--c-rakuten);
+            color: #FFF;
+            box-shadow: 0 8px 24px rgba(191, 0, 0, 0.25);
         }
 
         .btn:hover {
-            transform: translateY(-2px) scale(1.01);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 16px 40px rgba(191, 0, 0, 0.35);
         }
 
-        .tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 16px;
-            background: rgba(13, 152, 244, 0.08);
-            color: #0070BA;
-            /* Accessible Blue */
-            border-radius: 99px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-bottom: 24px;
+        .btn:active {
+            transform: scale(0.96);
         }
 
-        /* --- 4. Animation --- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* --- 5. Sections --- */
-
-        /* Hero */
-        .hero {
+        /* Cards (Unified) */
+        .card {
+            background: var(--c-bg-card);
+            border-radius: var(--r-md);
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--c-border);
+            transition: all 0.5s var(--ease-out-expo);
             position: relative;
-            min-height: 100vh;
-            padding: 50px 0 100px;
-            align-items: center;
             overflow: hidden;
-            background: radial-gradient(circle at 70% 20%, rgba(255, 0, 153, 0.03) 0%, rgba(255, 255, 255, 0) 60%);
         }
 
+        /* Color Strip on Top */
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: transparent;
+            transition: height 0.3s ease;
+        }
 
-        .hero-content h1 {
-            font-size: var(--sz-h1);
+        .card.rakuten-style::after {
+            background: var(--c-rakuten);
+        }
+
+        .card.ai-style::after {
+            background: var(--c-ai-grad);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(0, 0, 0, 0.0);
+        }
+
+        /* * SECTIONS
+         */
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 72px;
+            background: rgba(251, 251, 253, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--c-border-light);
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            margin: 3vw auto 2vw auto;
             font-weight: 700;
-            line-height: 1.15;
-            margin-top: 32px;
-            letter-spacing: -0.04em;
-            margin-bottom: 32px;
-            text-align: center;
+            font-size: 2vw;
             color: var(--c-text-main);
         }
 
-        .hero-content p {
-            font-size: var(--sz-body);
-            color: var(--c-text-sub);
-            margin-bottom: 48px;
-            max-width: 540px;
-        }
-
-        .hero-visual {
-            position: relative;
-            z-index: 1;
-        }
-
-        .visual-frame {
-            border-radius: var(--r-card);
-            overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            aspect-ratio: 4/3;
-            background: #eee;
-            /* Placeholder */
-            position: relative;
-        }
-
-        .visual-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
-        }
-
-        .visual-frame:hover img {
-            transform: scale(1.03);
-        }
-
-        /* Floating Cards */
-        .float-card {
-            position: absolute;
-            background: white;
-            padding: 14px 24px;
-            border-radius: 99px;
-            box-shadow: var(--shadow-md);
+        nav ul {
+            list-style: none;
             display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            z-index: 2;
-            animation: float 6s ease-in-out infinite;
+            gap: 40px;
         }
 
-        .float-1 {
-            top: 10%;
-            left: -20px;
-            animation-delay: 0s;
+        nav a {
+            text-decoration: none;
+            color: var(--c-text-sub);
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: color 0.3s;
         }
 
-        .float-2 {
-            bottom: 15%;
-            right: -20px;
-            animation-delay: 2s;
+        nav a:hover {
+            color: var(--c-rakuten);
         }
 
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
+        /* Hero */
+        .hero {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 95dvh;
+            margin-bottom: 15vw;
         }
 
-        /* Concept */
-        .section-concept {
-            padding: var(--sp-section) 0;
-            background: white;
+        .aaaa {
+            width: 80%;
+            margin: 2vw auto 0 auto;
         }
 
-        .concept-grid {
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 60px;
-            align-items: center;
+        /* Background Glow */
+        .hero::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(0, 122, 255, 0.05) 0%, rgba(255, 45, 85, 0.05) 50%, transparent 70%);
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            pointer-events: none;
         }
 
-        .section-title {
-            font-size: var(--sz-h2);
-            margin-bottom: 24px;
+        .hero h1 {
+            font-size: clamp(2rem, 1.5vw, 2rem);
+            text-align: left;
+            margin-bottom: 20px;
             letter-spacing: -0.02em;
         }
 
-        /* Feature Cards */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-top: 60px;
-        }
-
-        .feature-card {
-            background: var(--c-bg-surface);
-            padding: 40px 32px;
-            border-radius: var(--r-card);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--c-border);
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-md);
-            border-color: transparent;
-        }
-
-        .icon-box {
-            width: 64px;
-            height: 64px;
-            border-radius: 20px;
-            background: rgba(191, 0, 0, 0.04);
-            color: var(--c-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 24px;
-            transition: background 0.3s ease;
-        }
-
-        .feature-card:hover .icon-box {
-            background: var(--c-primary);
-            color: white;
-        }
-
-        .feature-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 16px;
-        }
-
-        .feature-card p {
+        .hero p {
+            font-size: clamp(1rem, 1.5vw, 1.15rem);
             color: var(--c-text-sub);
-            font-size: 0.95rem;
-            line-height: 1.7;
+            max-width: 680px;
+            margin: 0 auto 64px;
         }
 
-        /* Prototype Demo */
-        .section-demo {
-            padding: var(--sp-section) 0;
-            background: linear-gradient(180deg, var(--c-bg-body) 0%, #E9EFF5 100%);
-            text-align: center;
-            overflow: hidden;
+        .hero-tags {
+            display: flex;
+            gap: 12px;
         }
 
-        .demo-wrapper {
-            margin-top: 60px;
+        /* Main Visual Frame */
+
+        .main-visual-container img {
+            width: 80%;
+            height: 100%;
+            ;
+        }
+
+        .main-visual-container:hover img {
+            transform: scale(1.03);
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: clamp(2rem, 3.5vw, 2.5rem);
+            margin-bottom: 24px;
             position: relative;
             display: inline-block;
         }
 
-        .mockup {
-            width: 340px;
-            height: 680px;
-            background: #111;
-            border-radius: 48px;
-            padding: 12px;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-            margin: 0 auto;
-            border: 6px solid #2d2d2d;
+        .section-desc {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            color: var(--c-text-sub);
+            text-align: center;
         }
 
-        .mockup-screen {
-            background: white;
-            width: 100%;
-            height: 100%;
-            border-radius: 36px;
-            overflow: hidden;
-            position: relative;
+        /* Insight Grid */
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
         }
 
-        .mockup-placeholder {
-            position: absolute;
-            inset: 0;
+        .insight-card {
+            padding: 48px;
+            gap: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .insight-card .icon-box {
+            width: 64px;
+            height: 64px;
+            background: #F2F2F7;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--c-text-main);
+        }
+
+        .material-symbols-rounded {
+            font-size: 32px;
+            font-variation-settings: 'FILL' 1, 'wght' 500;
+        }
+
+        /* Comparison Diagram */
+        .comparison-area {
+            max-width: 1000px;
+            margin: 80px auto 0 auto;
+        }
+
+        .comparison-title {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            color: var(--c-text-sub);
+        }
+
+        .flow-row {
+            display: flex;
+            align-items: center;
+            background: #FFF;
+            padding: 40px;
+            border-radius: var(--r-md);
+            border: 1px solid var(--c-border);
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s;
+        }
+
+        /* After Flow (Highlighted) */
+        .flow-row.after {
+            background: linear-gradient(135deg, #F9FBFF 0%, #FFF9FA 100%);
+            border: 2px solid transparent;
+            background-image: linear-gradient(#F9FBFF, #FFF9FA), var(--c-ai-grad);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            box-shadow: var(--shadow-ai);
+        }
+
+        .flow-label {
+            width: 140px;
+            flex-shrink: 0;
+            padding-right: 40px;
+            border-right: 2px solid var(--c-border-light);
+            margin-right: 40px;
+            text-align: center;
+            font-weight: 700;
+            color: var(--c-text-main);
+        }
+
+        .flow-steps {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-grow: 1;
+            gap: 16px;
+        }
+
+        .step {
             display: flex;
             flex-direction: column;
             align-items: center;
+            z-index: 1;
+        }
+
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            background: #FFF;
+            border: 2px solid #E5E5EA;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            background: #f5f5f5;
-            color: #666;
-            padding: 20px;
-            z-index: 10;
+            margin-bottom: 12px;
+            color: #AEAEB2;
+            transition: all 0.3s;
+        }
+
+        .step-text {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--c-text-main);
+            white-space: nowrap;
+        }
+
+        .arrow {
+            color: #C7C7CC;
+            font-size: 1.5rem;
+            font-family: var(--font-en);
+            font-weight: 300;
+        }
+
+        /* After Flow Specifics */
+        .flow-row.after .step-icon {
+            border-color: rgba(0, 122, 255, 0.2);
+            color: #007AFF;
+        }
+
+        .flow-row.after .arrow {
+            color: #FF2D55;
+            opacity: 1;
+            font-weight: 500;
+        }
+
+        .step-img-box {
+            width: 200px;
+            height: auto;
+            margin-bottom: 16px;
+            transition: transform 0.4s var(--ease-out-expo);
+        }
+
+        .step-img-box:hover {
+            transform: scale(1.08);
+        }
+
+        .step-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Horizontal Steps */
+        .steps-container {
+            display: flex;
+            gap: 32px;
+            overflow-x: auto;
+            padding: 20px 4px 60px 4px;
+            scroll-snap-type: x mandatory;
+        }
+
+        .step-card {
+            min-width: 380px;
+            flex: 1;
+            scroll-snap-align: start;
+            /* Inherits .card styles */
+        }
+
+        .step-img-area {
+            width: 100%;
+            aspect-ratio: 16/10;
+            background: #F2F2F7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #C7C7CC;
+            border-bottom: 1px solid var(--c-border-light);
+        }
+
+        .step-img-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .step-content {
+            padding: 40px;
+        }
+
+        .step-num {
+            display: block;
+            margin-bottom: 12px;
+            font-family: var(--font-en);
+            font-weight: 700;
+            color: var(--c-rakuten);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* Value Grid (Vertical Full Width) */
+        .value-section {
+            background: #FFF;
+            border-radius: var(--r-lg);
+            border: 1px solid var(--c-border);
+            padding: 100px 60px;
+            margin: 120px 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .value-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3vw;
+        }
+
+        .value-card-inner {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        /* Prototype */
+        .prototype-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            height: 95vh;
+            margin: 0 0 60px;
+            border-radius: 56px;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .prototype-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #FFF;
         }
 
         /* Footer */
         footer {
-            padding: 80px 0 40px;
-            background: #111;
-            color: white;
+            background: #1C1C1E;
+            color: #FFF;
+            padding: 80px 0;
             text-align: center;
         }
 
-        .footer-nav {
-            display: flex;
-            justify-content: center;
-            gap: 32px;
-            margin-bottom: 40px;
-        }
-
-        .footer-nav a {
-            color: #888;
-            font-size: 0.9rem;
-        }
-
-        .footer-nav a:hover {
-            color: white;
-        }
-
-        .copyright {
-            color: #444;
+        footer p {
+            color: #8E8E93;
             font-size: 0.8rem;
         }
 
-        /* --- 6. Responsive Design --- */
-        @media (max-width: 960px) {
-
-            .hero-grid,
-            .concept-grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
-                text-align: center;
+        /* Mobile Optimization */
+        @media (max-width: 900px) {
+            :root {
+                --max-width: 92vw;
+                --sp-xl: 80px;
             }
 
-            .hero-content p {
-                margin: 0 auto 40px;
+            .hero h1 {
+                font-size: 2.8rem;
             }
 
-            .hero {
-                padding-top: 100px;
+            .flow-row {
+                flex-direction: column;
+                padding: 32px;
+                gap: 32px;
+                align-items: flex-start;
             }
 
-            .hero-grid {
-                /* スマホではビジュアルを先に持ってくるパターンも有効だが、
-                   今回はコピー優先でテキストを上にする */
+            .flow-label {
+                width: 100%;
+                border-right: none;
+                border-bottom: 2px solid var(--c-border-light);
+                padding: 0 0 20px 0;
+                margin: 0;
+                text-align: left;
+                display: flex;
+                align-items: center;
+                gap: 12px;
             }
 
-            .float-card {
-                display: none;
-                /* スマホで邪魔になるので消す */
+            .flow-steps {
+                width: 100%;
+                overflow-x: auto;
+                justify-content: flex-start;
+                gap: 32px;
+                padding-bottom: 8px;
+            }
+
+            .value-card-inner {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .value-section {
+                padding: 60px 24px;
             }
         }
 
         @media (max-width: 480px) {
+            .step-img-box {
+                width: 100%;
+                height: 200px;
+            }
+
+            .card {
+                padding: 32px 24px;
+            }
+
             .btn {
                 width: 100%;
             }
-
-            .mockup {
-                width: 100%;
-                height: 75vh;
-                border-width: 2px;
-            }
         }
 
-        /* --- Tutorial Visual (Prototypeから移植) --- */
-        .tuto-slide {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 24px 28px;
-            background: var(--c-bg-surface);
-            border: 1px solid var(--c-border);
-            border-radius: var(--r-card);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .tuto-anim-container {
-            height: 180px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 18px;
-            position: relative;
-        }
-
-        /* Step 1: Swipe Animation */
-        .tuto-stack {
-            position: relative;
-            width: 140px;
-            height: 180px;
-        }
-
-        .tuto-card-mock {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: white;
-            border: 1px solid #E0E0E0;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            top: 0;
-            left: 0;
-        }
-
-        .tuto-card-top {
-            z-index: 2;
-            animation: tutoCardSwipe 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .tuto-card-back {
-            z-index: 1;
-            transform: scale(0.9) translateY(12px);
-            background: #F9F9F9;
-        }
-
-        .tuto-hand {
-            position: absolute;
-            bottom: -30px;
-            right: -30px;
-            z-index: 10;
-            font-size: 48px;
-            color: #333;
-            animation: tutoHandSwipe 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-        }
-
-        @keyframes tutoCardSwipe {
-
-            0%,
-            15% {
-                transform: translateX(0) rotate(0);
-                opacity: 1;
-            }
-
-            50% {
-                transform: translateX(-120px) rotate(-15deg);
-                opacity: 0;
-            }
-
-            51% {
-                transform: translateX(0) rotate(0);
-                opacity: 0;
-            }
-
-            70%,
-            100% {
-                transform: translateX(0) rotate(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes tutoHandSwipe {
-
-            0%,
-            15% {
-                transform: translate(0, 0);
-                opacity: 1;
-            }
-
-            50% {
-                transform: translate(-100px, -20px);
-                opacity: 0;
-            }
-
-            51% {
-                transform: translate(0, 0);
-                opacity: 0;
-            }
-
-            70%,
-            100% {
-                transform: translate(0, 0);
-                opacity: 1;
-            }
-        }
-
-        /* Step 2: Analyze Animation */
-        .tuto-reviews {
-            position: relative;
-            width: 200px;
-            height: 150px;
-        }
-
-        .tuto-bubble {
-            position: absolute;
-            font-size: 24px;
-            color: #BBB;
-            animation: tutoBubbleFloat 3s infinite ease-in-out;
-        }
-
-        .tuto-brain-icon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 64px;
-            color: #7024C4;
-            filter: drop-shadow(0 0 20px rgba(112, 36, 196, 0.25));
-            animation: tutoPulse 2s infinite;
-        }
-
-        @keyframes tutoBubbleFloat {
-
-            0%,
-            100% {
-                transform: translateY(0) scale(1);
-            }
-
-            50% {
-                transform: translateY(-10px) scale(0.9);
-            }
-        }
-
-        @keyframes tutoPulse {
-
-            0%,
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-            }
-
-            50% {
-                transform: translate(-50%, -50%) scale(1.1);
-            }
-        }
-
-        /* Step 3: Result Animation */
-        .tuto-stars {
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-            justify-content: center;
-            height: 100%;
-        }
-
-        .tuto-star-card {
-            width: 40px;
-            height: 60px;
-            background: white;
-            border: 1px solid #EEE;
-            border-radius: 6px;
-            animation: tutoPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        /* Animation Classes */
+        .fade-up {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(40px);
+            transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo);
         }
 
-        .tuto-star-card.main {
-            width: 60px;
-            height: 110px;
-            border: 2px solid #7024C4;
-            box-shadow: 0 8px 20px rgba(112, 36, 196, 0.18);
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        @keyframes tutoPop {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* 動きが苦手な人向け（端末設定に従う） */
         @media (prefers-reduced-motion: reduce) {
-
-            .tuto-card-top,
-            .tuto-hand,
-            .tuto-bubble,
-            .tuto-brain-icon,
-            .tuto-star-card {
+            * {
+                transition: none !important;
                 animation: none !important;
             }
+        }
+
+        .maii {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .shsh {
+            display: flex;
+            flex-direction: column;
+            text-align: -webkit-center;
+        }
+
+        #prototype {
+            margin-top: 5vw;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Hero Section -->
-    <header class="hero">
-        <div class="container hero-grid">
-            <div class="hero-content reveal active">
+    <main>
+        <!-- Hero Section -->
+        <section class="hero fade-up">
+            <div class="logo">
+                <span class="en">Rakuten Winter Internship 2026</span>
+            </div>
+            <div class="container">
 
-                <h1>
-                    若年層ユーザーから<br>もっとたくさん使ってもらえるようになるための<br>新しいユーザー体験やサービス
-                </h1>
-                <div class="mainimg"><img src="img/aimaching.webp" alt=""></div>
-                <div style="display: flex; gap: 16px;" class="pr">
-                    <a href="https://kentakahashi0523.github.io/rakutenaimatching/" target="_blank"
-                        class="btn btn-primary">
-                        プロトタイプを試す
-                        <span class="material-symbols-rounded" aria-hidden="true">open_in_new</span>
-                    </a>
+                <div class="maii">
+                    <div class="main-visual-container">
+                        <!-- Placeholder: Main Visual -->
+                        <img src="img/aimaching.webp" alt="AI Smart Matching Main Visual">
+                    </div>
+                    <div class="aaaa">
+                        <h1>
+                            若年層ユーザーから<br>もっとたくさん使ってもらえるようになるための<br>新しいユーザー体験やサービスの提案
+                        </h1>
+                        <div class="hero-tags">
+                            <span class="badge rakuten">UXデザインコース</span>
+                            <span class="badge"><span class="en">2025.12.25 - 12.26</span></span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Context & Insight -->
+        <section id="context" class="container fade-up">
+            <div class="text-center">
+                <h2 class="section-title">現状の課題</h2>
+                <p class="section-desc">
+                    若年層ユーザーの買い物における「不」を解消する。<br>
+                    彼らは「得をする」ことよりも「損をしない」ことを重視します。
+                </p>
+            </div>
+
+            <div class="insight-grid">
+                <!-- Insight 1 -->
+                <div class="card insight-card">
+                    <div class="icon-box">
+                        <span class="material-symbols-rounded">manage_search</span>
+                    </div>
+                    <div>
+                        <h3>意思決定のコスト</h3>
+                        <p class="text-sub" style="margin-top: 12px;">
+                            「失敗したくない」からこそ、膨大な口コミやAIの回答を精査するのに時間がかかる。現在のAI検索も、納得感を得るにはまだ手間がかかります。
+                        </p>
+                    </div>
+                </div>
+                <!-- Insight 2 -->
+                <div class="card insight-card">
+                    <div class="icon-box">
+                        <span class="material-symbols-rounded">psychology_alt</span>
+                    </div>
+                    <div>
+                        <h3>納得感の欠如</h3>
+                        <p class="text-sub" style="margin-top: 12px;">
+                            単におすすめされるだけでは不安。自分が重視するポイント（価格、デザイン、耐久性など）で判断できたという「納得感」が必要です。
+                        </p>
+                    </div>
+                </div>
+                <!-- Persona (Highlighted) -->
+                <div class="card insight-card rakuten-style" style="background: #FFFAFA;">
+                    <div class="icon-box" style="background: var(--c-rakuten-sub); color: var(--c-rakuten);">
+                        <span class="material-symbols-rounded">person</span>
+                    </div>
+                    <div>
+                        <h3 class="text-rakuten">ペルソナのインサイト</h3>
+                        <p class="text-sub" style="margin-top: 12px;">
+                            「口コミを全部見るのは無理だけど、変な商品は買いたくない。自分のこだわりポイントだけでパパッと比較して決めたい。」
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-        </div>
-    </header>
+        </section>
 
-    <!-- Concept Section -->
-    <section class="section-concept">
-        <div class="container">
-            <div class="concept-grid">
-                <div class="reveal">
-                    <h2 class="section-title">
-                        直感で仕分けるから、<br>
-                        早くて<span class="text-gradient">迷わない</span>。
-                    </h2>
-                    <p style="color:var(--c-text-sub); margin-bottom: 24px;">
-                        ユーザーは「判断軸（価格、サイズ、用途など）」を左右のスワイプで仕分けるだけ。
-                        検索疲れや比較疲れを解消し、効率的で納得感のある買い物を実現します。
+        <!-- Solution (Service Overview) -->
+        <section id="solution" class="value-section fade-up">
+            <div class="container">
+
+                <div class="text-center">
+                    <div class="shsh">
+                        <span class="badge ai">新サービス</span>
+                        <h2 class="section-title">AI Smart Matching</h2>
+                    </div>
+                    <p class="section-desc">
+                        楽天市場の商品ページに実装される、新しいAIアシスタント機能。<br>
+                        膨大な口コミデータをAIが解析し、あなたの「判断軸」を抽出します。
                     </p>
-                    <ul style="list-style: none; display: grid; gap: 16px;">
-                        <li style="display: flex; align-items: center; gap: 12px; font-weight: 700;">
-                            <span class="material-symbols-rounded icon-fill"
-                                style="color:var(--c-primary)">check_circle</span>
-                            言語化できない「好み」を発見
-                        </li>
-                        <li style="display: flex; align-items: center; gap: 12px; font-weight: 700;">
-                            <span class="material-symbols-rounded icon-fill"
-                                style="color:var(--c-primary)">check_circle</span>
-                            学習コストゼロのUI体験
-                        </li>
-                    </ul>
-                </div>
-                <div class="tuto-slide" id="tuto-container">
-                    <!-- Dynamic Content -->
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Business Value (Why Rakuten?) -->
-    <section class="section-concept" style="background:var(--c-bg-body);">
-        <div class="container">
-            <div class="reveal" style="text-align: center; max-width: 700px; margin: 0 auto 60px;">
-                <span class="tag" style="background:white; border:1px solid var(--c-border);">Business Value</span>
-                <h2 class="section-title">なぜ、楽天でやるのか？</h2>
-                <p>この機能がもたらすビジネスインパクトと拡張性</p>
-            </div>
-
-            <div class="features reveal">
-                <!-- Card 1 -->
-                <article class="feature-card">
-                    <div class="icon-box">
-                        <span class="material-symbols-rounded icon-lg">database</span>
+                    <!-- How it works (Horizontal Scroll) -->
+                    <div class="steps-container">
+                        <!-- Step 1 -->
+                        <div class="step-card card ai-style">
+                            <div class="step-img-area">
+                                <img src="https://placehold.co/800x600/F0F4F8/AAA?text=Step+1:+AI+Analysis"
+                                    alt="AIによる抽出">
+                            </div>
+                            <div class="step-content">
+                                <span class="step-num">ステップ 01</span>
+                                <h3>判断軸を自動抽出</h3>
+                                <p class="text-sub" style="margin-top: 12px;">
+                                    AIが膨大な口コミから、その商品を選ぶ際に重要となる判断軸（耐久性、コスパ、静音性など）を自動で抽出します。</p>
+                            </div>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="step-card card ai-style">
+                            <div class="step-img-area">
+                                <img src="https://placehold.co/800x600/F0F4F8/AAA?text=Step+2:+Swipe+UI" alt="スワイプで仕分け">
+                            </div>
+                            <div class="step-content">
+                                <span class="step-num">ステップ 02</span>
+                                <h3>スワイプで直感仕分け</h3>
+                                <p class="text-sub" style="margin-top: 12px;">
+                                    抽出された項目に対し、自分が「重視する」か「しない」かを左右のスワイプで仕分け。ゲーム感覚で直感的に操作できます。</p>
+                            </div>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="step-card card ai-style">
+                            <div class="step-img-area">
+                                <img src="https://placehold.co/800x600/F0F4F8/AAA?text=Step+3:+Best+3" alt="ベスト3の提案">
+                            </div>
+                            <div class="step-content">
+                                <span class="step-num">ステップ 03</span>
+                                <h3>納得のベスト3を提案</h3>
+                                <p class="text-sub" style="margin-top: 12px;">
+                                    あなたの重視ポイントに基づいて商品を絞り込み、最終的な3つの選択肢を提案。理由が明確だから即決できます。</p>
+                            </div>
+                        </div>
                     </div>
-                    <h3>圧倒的な実データ</h3>
-                    <p>楽天市場・トラベルなどに蓄積された膨大な口コミや購入後評価があるからこそ、AIが正確な「判断軸」や「失敗理由」を抽出できます。</p>
-                </article>
 
-                <!-- Card 2 -->
-                <article class="feature-card">
-                    <div class="icon-box">
-                        <span class="material-symbols-rounded icon-lg">hub</span>
-                    </div>
-                    <h3>サービス横断の拡張性</h3>
-                    <p>IDが連携しているため、この判断傾向データはECだけでなく、金融や旅行などグループ全体の体験設計に波及できます。</p>
-                </article>
+                    <!-- Comparison Diagram -->
+                    <div class="comparison-area">
+                        <h3 class="comparison-title">購入までの手間の比較</h3>
 
-                <!-- Card 3 -->
-                <article class="feature-card">
-                    <div class="icon-box">
-                        <span class="material-symbols-rounded icon-lg">trending_up</span>
-                    </div>
-                    <h3>LTVの最大化</h3>
-                    <p>使えば使うほど「自分のデータ」が蓄積され、提案精度が向上。ユーザーの離脱を防ぎ、長期的なエンゲージメントを築きます。</p>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <!-- Prototype Demo -->
-    <section class="section-demo">
-        <div class="container">
-            <div class="reveal">
-                <span class="tag" style="background:white;">Prototype</span>
-                <h2 class="section-title">Experience the Future</h2>
-                <p>実際の操作画面をご覧ください</p>
-
-                <div class="demo-wrapper">
-                    <div class="mockup">
-                        <div class="mockup-screen">
-                            <!-- iframe読み込み（遅延ロード対応） -->
-                            <iframe src="https://kentakahashi0523.github.io/rakutenaimatching/"
-                                title="Rakuten AI Matching Prototype" width="100%" height="100%"
-                                style="border:none; position:relative; z-index:20;" loading="lazy">
-                            </iframe>
-                            <!-- 読み込み失敗時やロード中のためのプレースホルダ -->
-                            <div class="mockup-placeholder">
+                        <!-- Before Flow -->
+                        <div class="flow-row">
+                            <div class="flow-label">
                                 <span class="material-symbols-rounded"
-                                    style="font-size: 48px; color: #ddd; margin-bottom:16px;">smartphone</span>
-                                <p>Loading Demo...</p>
-                                <a href="https://kentakahashi0523.github.io/rakutenaimatching/" target="_blank"
-                                    class="btn btn-primary" style="margin-top:20px; font-size:0.9rem;">
-                                    別タブで開く
-                                </a>
+                                    style="color: #AEAEB2; margin-bottom: 4px;">history</span><br>
+                                現状
+                            </div>
+                            <div class="flow-steps">
+                                <div class="step">
+                                    <div class="step-icon"><span class="material-symbols-rounded">search</span></div>
+                                    <span class="step-text">検索</span>
+                                </div>
+                                <span class="arrow">→</span>
+                                <div class="step">
+                                    <div class="step-icon"><span class="material-symbols-rounded">rate_review</span>
+                                    </div>
+                                    <span class="step-text">口コミ精査</span>
+                                </div>
+                                <span class="arrow">→</span>
+                                <div class="step">
+                                    <div class="step-icon"><span class="material-symbols-rounded">psychology_alt</span>
+                                    </div>
+                                    <span class="step-text">AI検索</span>
+                                </div>
+                                <span class="arrow">→</span>
+                                <div class="step">
+                                    <div class="step-icon"><span class="material-symbols-rounded">filter_alt</span>
+                                    </div>
+                                    <span class="step-text">絞り込み</span>
+                                </div>
+                                <span class="arrow">→</span>
+                                <div class="step">
+                                    <div class="step-icon"><span class="material-symbols-rounded">shopping_cart</span>
+                                    </div>
+                                    <span class="step-text">購入</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- After Flow -->
+                        <div class="flow-row after">
+                            <div class="flow-label">
+                                <span class="material-symbols-rounded text-rakuten"
+                                    style="margin-bottom: 4px;">bolt</span><br>
+                                <span class="text-grad-ai">AI Smart<br>Matching</span>
+                            </div>
+                            <div class="flow-steps">
+                                <div class="step">
+                                    <div class="step-icon"><span class="material-symbols-rounded">search</span></div>
+                                    <span class="step-text">検索</span>
+                                </div>
+                                <span class="arrow"><span class="material-symbols-rounded">fast_forward</span></span>
+                                <div class="step">
+                                    <!-- AI Swipe Image -->
+                                    <div class="step-img-box">
+                                        <img src="img/aimaching.webp" alt="スワイプ画面">
+                                    </div>
+                                    <span class="step-text" style="color:#007AFF;"><strong>スワイプで<br>仕分け</strong></span>
+                                </div>
+                                <span class="arrow">→</span>
+                                <div class="step">
+                                    <div class="step-icon"><span class="material-symbols-rounded">shopping_cart</span>
+                                    </div>
+                                    <span class="step-text">購入</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Rakuten & Value -->
+        <section class="container fade-up" style="margin-bottom: var(--sp-xl);">
+            <div class="value-grid">
+                <!-- Why Rakuten -->
+                <div>
+                    <h2 class="section-title" style="text-align: left;">なぜ楽天か？</h2>
+                    <div class="card rakuten-style">
+                        <div class="value-card-inner" style="margin-bottom: 40px;">
+                            <span class="material-symbols-rounded text-rakuten" style="font-size: 48px;">database</span>
+                            <div>
+                                <h3>圧倒的なデータ資産</h3>
+                                <p class="text-sub" style="margin-top: 8px;">
+                                    日本トップ規模のECサイトだからこそ、AIの学習元となる「質の高い口コミ」と「商品数」が確保でき、精度の高い提案が可能です。</p>
+                            </div>
+                        </div>
+                        <div class="value-card-inner">
+                            <span class="material-symbols-rounded text-rakuten" style="font-size: 48px;">hub</span>
+                            <div>
+                                <h3>エコシステムへの展開</h3>
+                                <p class="text-sub" style="margin-top: 8px;">
+                                    ECで蓄積されたユーザーの「判断の癖」や価値観データは、楽天トラベルや楽天カードなど、グループ内の他サービス体験にも応用可能です。</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div style="margin-top: 40px;">
-                    <a href="https://kentakahashi0523.github.io/rakutenaimatching/" target="_blank" class="btn btn-ai">
-                        全画面でデモを試す
-                        <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
+                <!-- Value for Youth -->
+                <div>
+                    <h2 class="section-title" style="text-align: left;">若者への提供価値</h2>
+                    <div class="card ai-style">
+                        <div class="value-card-inner" style="margin-bottom: 40px;">
+                            <span class="material-symbols-rounded" style="font-size: 48px; color: #007AFF;">swipe</span>
+                            <div>
+                                <h3>UIの親和性「Swipe」</h3>
+                                <p class="text-sub" style="margin-top: 8px;">
+                                    普段使い慣れているマッチングアプリやSNSのような「スワイプ操作」を取り入れることで、買い物をタスクから「楽しい体験」へと変えます。</p>
+                            </div>
+                        </div>
+                        <div class="value-card-inner">
+                            <span class="material-symbols-rounded"
+                                style="font-size: 48px; color: #FF2D55;">favorite</span>
+                            <div>
+                                <h3>パーソナライズと継続性</h3>
+                                <p class="text-sub" style="margin-top: 8px;">
+                                    使えば使うほどAIが好みを学習。スワイプデータの蓄積により、長期的にはさらに精度の高い「あなただけのEC」へと進化し、離脱を防ぎます。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prototype -->
+        <section id="prototype" class="fade-up" style="padding: 0 0 160px 0;">
+            <div class="container text-center">
+                <div class="ppcont">
+                    <div class="asana">
+                        <h2 class="section-title">プロトタイプを試す</h2>
+                        <p class="section-desc">
+                            実際のプロトタイプを操作できます。<br>
+                            スワイプによる直感的な絞り込み体験をお試しください。
+                        </p>
+                    </div>
+                    <div class="prototype-wrapper">
+                        <!-- Embed Target URL -->
+                        <iframe src="https://kentakahashi0523.github.io/rakutenaimatching/"
+                            title="Rakuten AI Matching Prototype"></iframe>
+                    </div>
+                </div>
+                <div style="margin-top: 60px;">
+                    <a href="https://kentakahashi0523.github.io/rakutenaimatching/" target="_blank"
+                        class="btn btn-rakuten">
+                        別ウィンドウで開く
+                        <span class="material-symbols-rounded" style="font-size: 20px;">open_in_new</span>
                     </a>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+    </main>
 
     <!-- Footer -->
     <footer>
         <div class="container">
-            <h2 style="font-size: 1.5rem; margin-bottom: 24px; font-weight:900;">Rakuten AI Smart Matching</h2>
-            <div class="footer-nav">
-                <!-- 実運用時はリンクを入れる -->
-                <a href="#">About</a>
-                <a href="#">Contact</a>
-                <a href="#">Privacy Policy</a>
-            </div>
-            <p class="copyright">&copy; 2024 Portfolio Work. All rights reserved.</p>
+            <p class="en">&copy; 2026 Rakuten Winter Internship UX Design Course / Personal Work</p>
+            <p style="margin-top: 16px; opacity: 0.7;">Designed & Developed for Portfolio</p>
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script>
-        // Scroll Animation Observer (Performance Optimized)
-        document.addEventListener("DOMContentLoaded", () => {
-            const observer = new IntersectionObserver((entries) => {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Scroll Animation Observer (Optimized)
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -10% 0px', // Trigger a bit earlier
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
                     }
                 });
-            }, {
-                rootMargin: '0px 0px -10% 0px', // 少し見えてから発火
-                threshold: 0.1
+            }, observerOptions);
+
+            const fadeElements = document.querySelectorAll('.fade-up');
+            fadeElements.forEach(el => observer.observe(el));
+
+            // Smooth Scroll with Offset
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        const headerOffset = 90;
+                        const elementPosition = target.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth"
+                        });
+                    }
+                });
             });
-
-            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         });
-
-        /* Tuto Logic */
-        function renderTutoContent() {
-            const d = DATA.tutos[state.tutoIdx];
-            const container = document.getElementById('tuto-container');
-
-            let visualHTML = '';
-            if (d.type === 'swipe') {
-                visualHTML = `
-                <div class="tuto-anim-container">
-                    <div class="tuto-stack">
-                        <div class="tuto-card-mock tuto-card-back"></div>
-                        <div class="tuto-card-mock tuto-card-top">
-                            <div style="width:60px; height:60px; background:#F2F2F7; border-radius:50%; margin:0 auto;"></div>
-                            <div style="width:80px; height:10px; background:#F2F2F7; border-radius:4px; margin:0 auto;"></div>
-                        </div>
-                    </div>
-                    <span class="material-symbols-rounded tuto-hand">touch_app</span>
-                </div>
-            `;
-            } else if (d.type === 'analyze') {
-                visualHTML = `
-                <div class="tuto-anim-container">
-                    <div class="tuto-reviews">
-                        <span class="material-symbols-rounded tuto-bubble" style="top:10%; left:10%; animation-delay:0s">chat</span>
-                        <span class="material-symbols-rounded tuto-bubble" style="top:20%; right:10%; animation-delay:0.5s">rate_review</span>
-                        <span class="material-symbols-rounded tuto-bubble" style="bottom:10%; left:20%; animation-delay:1s">thumb_up</span>
-                        <span class="material-symbols-rounded tuto-brain-icon">psychology</span>
-                    </div>
-                </div>
-            `;
-            } else {
-                visualHTML = `
-                <div class="tuto-anim-container">
-                    <div class="tuto-stars">
-                        <div class="tuto-star-card" style="animation-delay:0s"></div>
-                        <div class="tuto-star-card main" style="animation-delay:0.2s"></div>
-                        <div class="tuto-star-card" style="animation-delay:0.4s"></div>
-                    </div>
-                </div>
-            `;
-            }
-
-            container.innerHTML = `
-            ${visualHTML}
-            <h2 style="font-size:24px; margin-bottom:12px; letter-spacing: -0.01em;">${d.title}</h2>
-            <p style="font-size:15px; line-height:1.7; color:var(--c-text-sub);">${d.desc.replace(/\n/g, '<br>')}</p>
-        `;
-
-            document.querySelectorAll('.dot').forEach((e, i) => e.style.background = (i === state.tutoIdx) ? 'var(--c-ai-start)' : 'var(--c-border)');
-
-            const btn = document.getElementById('tuto-btn');
-            if (state.tutoIdx === DATA.tutos.length - 1) btn.innerText = '始める';
-            else btn.innerText = '次へ';
-        }
     </script>
-
-
 </body>
 
 </html>
